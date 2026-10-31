@@ -1,5 +1,6 @@
 const cartService = require("./cartService");
 const inventoryService = require("./inventoryService");
+const paymentService = require("./paymentService");
 
 const orders = new Map();
 
@@ -10,11 +11,18 @@ function placeOrder(customerId) {
     return { error: "Cart is empty", status: 400 };
   }
 
+  const items = cartItems.map((item) => ({
+    productId: item.productId,
+    name: item.product.name,
+    unitPrice: item.product.price,
+    quantity: item.quantity,
+    lineTotal: item.product.price * item.quantity
+  }));
+
+  const total = items.reduce((sum, item) => sum + item.lineTotal, 0);
+
   const reservation = inventoryService.reserveStock(
-    cartItems.map((item) => ({
-      productId: item.productId,
-      quantity: item.quantity
-    }))
+    items.map(({ productId, quantity }) => ({ productId, quantity }))
   );
 
   if (reservation.error) {
@@ -26,15 +34,22 @@ function placeOrder(customerId) {
   }
 
   const reservationId = reservation.data.reservationId;
+  const paymentResult = paymentService.processPayment(
+    `pending-${reservationId}`,
+    total
+  );
+
+  if (paymentResult.error) {
+    inventoryService.releaseReservation(reservationId);
+    return { error: paymentResult.error, status: 400 };
+  }
+
   const confirmation =
     inventoryService.confirmReservation(reservationId);
 
   if (confirmation.error) {
     inventoryService.releaseReservation(reservationId);
-    return {
-      error: confirmation.error,
-      status: 409
-    };
+    return { error: confirmation.error, status: 409 };
   }
 
   const orderId = `o-${Date.now()}-${Math.random()
@@ -44,7 +59,9 @@ function placeOrder(customerId) {
   const order = {
     orderId,
     customerId,
-    items: cartItems,
+    items,
+    total,
+    paymentId: paymentResult.data.paymentId,
     status: "confirmed",
     createdAt: new Date().toISOString()
   };
