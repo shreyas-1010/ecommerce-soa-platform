@@ -25,17 +25,32 @@ function placeOrder(customerId) {
     };
   }
 
-  const orderId = `o-${Date.now()}`;
+  const reservationId = reservation.data.reservationId;
+  const confirmation =
+    inventoryService.confirmReservation(reservationId);
+
+  if (confirmation.error) {
+    inventoryService.releaseReservation(reservationId);
+    return {
+      error: confirmation.error,
+      status: 409
+    };
+  }
+
+  const orderId = `o-${Date.now()}-${Math.random()
+    .toString(36)
+    .slice(2, 8)}`;
+
   const order = {
     orderId,
     customerId,
     items: cartItems,
     status: "confirmed",
-    reservationId: reservation.data.reservationId,
     createdAt: new Date().toISOString()
   };
 
   orders.set(orderId, order);
+
   return { data: order };
 }
 
