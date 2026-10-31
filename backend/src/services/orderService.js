@@ -2,6 +2,7 @@ const cartService = require("./cartService");
 const inventoryService = require("./inventoryService");
 const paymentService = require("./paymentService");
 const deliveryService = require("./deliveryService");
+const notificationService = require("./notificationService");
 
 const orders = new Map();
 
@@ -69,6 +70,10 @@ function placeOrder(customerId) {
 
   const deliveryResult = deliveryService.createDelivery(order);
   order.deliveryId = deliveryResult.data.deliveryId;
+
+  const notificationResult =
+    notificationService.sendOrderConfirmation(order);
+  order.notificationId = notificationResult.data.notificationId;
 
   orders.set(orderId, order);
 
