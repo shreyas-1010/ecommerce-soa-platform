@@ -2,10 +2,15 @@ const express = require("express");
 const productService = require("./services/productService");
 const cartService = require("./services/cartService");
 const inventoryService = require("./services/inventoryService");
+const orderService = require("./services/orderService");
 
 const app = express();
 
 app.use(express.json());
+
+function getCustomerId(req) {
+  return req.header("x-customer-id") || "guest";
+}
 
 app.get("/", (req, res) => {
   res.json({
@@ -36,15 +41,16 @@ app.get("/api/products/:productId", (req, res) => {
 
 // Cart Service
 app.get("/api/cart", (req, res) => {
-  const customerId = req.header("x-customer-id") || "guest";
-  res.json({ data: cartService.getCartWithProducts(customerId) });
+  res.json({ data: cartService.getCartWithProducts(getCustomerId(req)) });
 });
 
 app.post("/api/cart/items", (req, res) => {
-  const customerId = req.header("x-customer-id") || "guest";
   const { productId, quantity } = req.body;
-
-  const result = cartService.addItem(customerId, productId, quantity);
+  const result = cartService.addItem(
+    getCustomerId(req),
+    productId,
+    quantity
+  );
 
   if (result.error) {
     const status = result.error === "Product not found" ? 404 : 400;
@@ -55,8 +61,10 @@ app.post("/api/cart/items", (req, res) => {
 });
 
 app.delete("/api/cart/items/:productId", (req, res) => {
-  const customerId = req.header("x-customer-id") || "guest";
-  const cart = cartService.removeItem(customerId, req.params.productId);
+  const cart = cartService.removeItem(
+    getCustomerId(req),
+    req.params.productId
+  );
   res.json({ data: cart });
 });
 
@@ -85,8 +93,35 @@ app.delete("/api/inventory/reservations/:reservationId", (req, res) => {
   const result = inventoryService.releaseReservation(
     req.params.reservationId
   );
-
   res.json({ data: result });
+});
+
+// Order Service
+app.post("/api/orders", (req, res) => {
+  const result = orderService.placeOrder(getCustomerId(req));
+
+  if (result.error) {
+    return res.status(result.status || 400).json(result);
+  }
+
+  res.status(201).json(result);
+});
+
+app.get("/api/orders", (req, res) => {
+  res.json({ data: orderService.listOrders(getCustomerId(req)) });
+});
+
+app.get("/api/orders/:orderId", (req, res) => {
+  const order = orderService.findOrderById(
+    getCustomerId(req),
+    req.params.orderId
+  );
+
+  if (!order) {
+    return res.status(404).json({ error: "Order not found" });
+  }
+
+  res.json({ data: order });
 });
 
 module.exports = app;
