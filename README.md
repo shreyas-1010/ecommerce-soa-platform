@@ -22,7 +22,7 @@ The modules communicate through JavaScript interfaces within the backend. The fr
 - **Delivery Service** — creates simulated delivery and tracking details.
 - **Notification Service** — creates and lists order notifications.
 
-User identity is represented by the `x-customer-id` request header for this academic demonstration; it is not production authentication.
+Customer identity uses the `x-customer-id` request header for this academic demonstration; it is not production authentication.
 
 ## Repository contents
 
