@@ -1,25 +1,28 @@
 # E-Commerce Platform Using Service-Oriented Architecture
 
-A college project that identifies the business services in an e-commerce platform and models how they interact using Service-Oriented Architecture (SOA).
+A college project that models an e-commerce platform as business services with clear responsibilities and interfaces.
 
 ## Project objective
 
-Analyze common e-commerce capabilities, assign them to services with clear responsibilities, and show how they coordinate during order placement.
+Identify the main business capabilities of an e-commerce platform, organize them into services, and demonstrate how they coordinate during order placement.
 
 ## Architecture
 
-The backend is organized as a modular monolith using Express. It contains business service modules with clear responsibilities and interfaces, demonstrating SOA service boundaries in a manageable application.
+The backend is a modular monolith built with Node.js and Express. It runs as one application with separate modules for Product, Cart, Inventory, Order, Payment, Delivery, and Notification services.
+
+The modules communicate through JavaScript interfaces within the backend. The frontend-facing API uses REST-style HTTP endpoints.
 
 ## Services
 
-- User
-- Product
-- Cart
-- Inventory
-- Order
-- Payment
-- Delivery
-- Notification
+- **Product Service** — lists and searches products and retrieves product details.
+- **Cart Service** — adds, views, and removes cart items.
+- **Inventory Service** — checks stock and reserves or confirms inventory.
+- **Order Service** — coordinates checkout and provides order history.
+- **Payment Service** — records a simulated payment result.
+- **Delivery Service** — creates simulated delivery and tracking details.
+- **Notification Service** — creates and lists order notifications.
+
+User identity is represented by the `x-customer-id` request header for this academic demonstration; it is not production authentication.
 
 ## Repository contents
 
@@ -32,19 +35,20 @@ The backend is organized as a modular monolith using Express. It contains busine
 - [Service responsibility matrix](docs/service-matrix.md)
 - [Service directory](docs/service-directory.md)
 - [SOA glossary](docs/glossary.md)
-- `backend/` — Express backend
+- `backend/src/app.js` — Express application and API routes
+- `backend/src/server.js` — starts the HTTP server
+- `backend/src/services/` — business service modules
 
 ## Technology stack
 
-- Frontend: React
 - Backend: Node.js and Express
-- Database: MongoDB
-- Frontend-to-backend communication: REST-style HTTP APIs
+- API: REST-style HTTP
+- Data storage: in-memory sample data
 
-## Project status
+## Run locally
 
-The project includes SOA architecture and service design documentation, along with an Express backend starter.
+From the `backend/` directory:
 
-## Academic demonstration
-
-Payment and delivery are simulated for demonstration. The project does not process real payments or arrange real shipments.
+```bash
+npm install
+npm start
