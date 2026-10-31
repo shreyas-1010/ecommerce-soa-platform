@@ -4,13 +4,13 @@ A college project that identifies the business services in an e-commerce platfor
 
 ## Project objective
 
-Analyze common e-commerce capabilities, assign them to services with clear responsibilities, and describe how those services coordinate during order placement.
+Analyze common e-commerce capabilities, assign them to services with clear responsibilities, and show how they coordinate during order placement.
 
 ## Architecture
 
-The project models a **modular monolith**: one backend application with distinct service modules and interfaces. This keeps the academic demonstration manageable while showing service boundaries and interactions.
+The backend is organized as a modular monolith using Express. It contains business service modules with clear responsibilities and interfaces, demonstrating SOA service boundaries in a manageable application.
 
-## Planned services
+## Services
 
 - User
 - Product
@@ -24,14 +24,17 @@ The project models a **modular monolith**: one backend application with distinct
 ## Repository contents
 
 - [SOA architecture](docs/architecture.md)
+- [Architecture decision](docs/architecture-decision.md)
 - [API catalog](docs/api-catalog.md)
 - [Order interaction diagram](docs/service-interaction.md)
+- [Checkout activity diagram](docs/checkout-activity.md)
 - [Project scope](docs/project-scope.md)
 - [Service responsibility matrix](docs/service-matrix.md)
+- [Service directory](docs/service-directory.md)
 - [SOA glossary](docs/glossary.md)
-- `backend/` — Express backend starter
+- `backend/` — Express backend
 
-## Technology plan
+## Technology stack
 
 - Frontend: React
 - Backend: Node.js and Express
@@ -40,8 +43,8 @@ The project models a **modular monolith**: one backend application with distinct
 
 ## Project status
 
-The SOA analysis and design documents are being prepared. The backend currently contains a starter API.
+The project includes SOA architecture and service design documentation, along with an Express backend starter.
 
 ## Academic demonstration
 
-Payment and delivery are modeled for demonstration only. This project does not process real payments or arrange real shipments.
+Payment and delivery are simulated for demonstration. The project does not process real payments or arrange real shipments.
