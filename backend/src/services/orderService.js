@@ -1,6 +1,7 @@
 const cartService = require("./cartService");
 const inventoryService = require("./inventoryService");
 const paymentService = require("./paymentService");
+const deliveryService = require("./deliveryService");
 
 const orders = new Map();
 
@@ -65,6 +66,9 @@ function placeOrder(customerId) {
     status: "confirmed",
     createdAt: new Date().toISOString()
   };
+
+  const deliveryResult = deliveryService.createDelivery(order);
+  order.deliveryId = deliveryResult.data.deliveryId;
 
   orders.set(orderId, order);
 
