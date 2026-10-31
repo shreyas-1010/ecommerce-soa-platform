@@ -1,33 +1,47 @@
 # E-Commerce Platform Using Service-Oriented Architecture
 
-A college project exploring how an e-commerce application can be organized into independent, reusable services.
+A college project that identifies the business services in an e-commerce platform and models how they interact using Service-Oriented Architecture (SOA).
 
 ## Project objective
 
-Identify the main business functions of an e-commerce platform and model how they can work together through service interfaces.
+Analyze common e-commerce capabilities, assign them to services with clear responsibilities, and describe how those services coordinate during order placement.
+
+## Architecture
+
+The project models a **modular monolith**: one backend application with distinct service modules and interfaces. This keeps the academic demonstration manageable while showing service boundaries and interactions.
 
 ## Planned services
 
-- User Service
-- Product Service
-- Cart Service
-- Order Service
-- Payment Service
-- Inventory Service
-- Delivery Service
-- Notification Service
+- User
+- Product
+- Cart
+- Inventory
+- Order
+- Payment
+- Delivery
+- Notification
 
-## Planned technology
+## Repository contents
+
+- [SOA architecture](docs/architecture.md)
+- [API catalog](docs/api-catalog.md)
+- [Order interaction diagram](docs/service-interaction.md)
+- [Project scope](docs/project-scope.md)
+- [Service responsibility matrix](docs/service-matrix.md)
+- [SOA glossary](docs/glossary.md)
+- `backend/` — Express backend starter
+
+## Technology plan
 
 - Frontend: React
 - Backend: Node.js and Express
 - Database: MongoDB
-- Communication: REST APIs
+- Frontend-to-backend communication: REST-style HTTP APIs
 
 ## Project status
 
-Initial planning and repository setup.
+The SOA analysis and design documents are being prepared. The backend currently contains a starter API.
 
-## Disclaimer
+## Academic demonstration
 
-This is an academic project. Payment and delivery flows are for demonstration and do not process real transactions.
+Payment and delivery are modeled for demonstration only. This project does not process real payments or arrange real shipments.
