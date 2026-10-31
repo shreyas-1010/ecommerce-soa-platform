@@ -3,6 +3,9 @@ const productService = require("./services/productService");
 const cartService = require("./services/cartService");
 const inventoryService = require("./services/inventoryService");
 const orderService = require("./services/orderService");
+const paymentService = require("./services/paymentService");
+const deliveryService = require("./services/deliveryService");
+const notificationService = require("./services/notificationService");
 
 const app = express();
 
@@ -13,10 +16,7 @@ function getCustomerId(req) {
 }
 
 app.get("/", (req, res) => {
-  res.json({
-    name: "E-Commerce SOA API",
-    status: "running"
-  });
+  res.json({ name: "E-Commerce SOA API", status: "running" });
 });
 
 app.get("/api/health", (req, res) => {
@@ -25,8 +25,9 @@ app.get("/api/health", (req, res) => {
 
 // Product Service
 app.get("/api/products", (req, res) => {
-  const products = productService.listProducts(req.query.search || "");
-  res.json({ data: products });
+  res.json({
+    data: productService.listProducts(req.query.search || "")
+  });
 });
 
 app.get("/api/products/:productId", (req, res) => {
@@ -61,11 +62,11 @@ app.post("/api/cart/items", (req, res) => {
 });
 
 app.delete("/api/cart/items/:productId", (req, res) => {
-  const cart = cartService.removeItem(
+  const data = cartService.removeItem(
     getCustomerId(req),
     req.params.productId
   );
-  res.json({ data: cart });
+  res.json({ data });
 });
 
 // Inventory Service
@@ -90,10 +91,9 @@ app.post("/api/inventory/reservations", (req, res) => {
 });
 
 app.delete("/api/inventory/reservations/:reservationId", (req, res) => {
-  const result = inventoryService.releaseReservation(
-    req.params.reservationId
-  );
-  res.json({ data: result });
+  res.json({
+    data: inventoryService.releaseReservation(req.params.reservationId)
+  });
 });
 
 // Order Service
@@ -122,6 +122,51 @@ app.get("/api/orders/:orderId", (req, res) => {
   }
 
   res.json({ data: order });
+});
+
+// Payment Service
+app.get("/api/payments/:paymentId", (req, res) => {
+  const payment = paymentService.findPaymentById(req.params.paymentId);
+
+  if (!payment) {
+    return res.status(404).json({ error: "Payment not found" });
+  }
+
+  res.json({ data: payment });
+});
+
+// Delivery Service
+app.get("/api/deliveries/:orderId", (req, res) => {
+  const delivery = deliveryService.findDeliveryByOrderId(
+    req.params.orderId,
+    getCustomerId(req)
+  );
+
+  if (!delivery) {
+    return res.status(404).json({ error: "Delivery not found" });
+  }
+
+  res.json({ data: delivery });
+});
+
+// Notification Service
+app.get("/api/notifications", (req, res) => {
+  res.json({
+    data: notificationService.listNotifications(getCustomerId(req))
+  });
+});
+
+app.patch("/api/notifications/:notificationId/read", (req, res) => {
+  const notification = notificationService.markAsRead(
+    getCustomerId(req),
+    req.params.notificationId
+  );
+
+  if (!notification) {
+    return res.status(404).json({ error: "Notification not found" });
+  }
+
+  res.json({ data: notification });
 });
 
 module.exports = app;
